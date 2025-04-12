@@ -1,73 +1,78 @@
-# Welcome to your Lovable project
+# 🧠 AI Command Agent
 
-## Project info
+This project is an **AI-powered command agent** that automates local development tasks via terminal commands. It uses a free-tier AI API (like OpenAI or open-source models) to interpret natural language tasks, convert them into actionable plans, execute those commands, and retry on failure.
 
-**URL**: https://lovable.dev/projects/7992c38b-6feb-4d80-a87f-d7644f9b3cd9
+---
 
-## How can I edit this code?
+## 🛠 Tech Stack
+- Node.js
+- TypeScript / JavaScript
+- OpenAI (Free-tier or compatible local models)
+- readline / fs / child_process
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## ⚙️ Features
+- Chat-like command interface
+- Plans tasks using AI
+- Seeks user confirmation before execution
+- Executes terminal commands locally
+- Handles task failures and retries with improved prompts
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7992c38b-6feb-4d80-a87f-d7644f9b3cd9) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Getting Started
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### 1. Clone the Repository
+```bash
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 3. Set Up Environment
+Create a `.env` file and add your API key:
+```
+OPENAI_API_KEY=your_key_here
+```
 
-**Use GitHub Codespaces**
+### 4. Run the Agent
+```bash
+node ai-command-agent.js
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🧪 Example Task Flow
 
-This project is built with:
+1. **You:** "Create a simple Node.js Hello World server"
+2. **Agent:** Suggests plan, shows commands.
+3. **You:** Approve.
+4. **Agent:** Executes, confirms success.
+5. **You:** Report success or request retry.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 🔐 Security Warning
+This agent executes terminal commands. Only run trusted prompts on secure systems. Use responsibly.
 
-Simply open [Lovable](https://lovable.dev/projects/7992c38b-6feb-4d80-a87f-d7644f9b3cd9) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 🧩 Future Enhancements
+- VSCode extension support
+- Built-in prompt templates
+- Error analysis and auto-debugging
+- Git integration for tracking changes
 
-Yes it is!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📄 License
+MIT License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+
+Built with 💻 and AI to streamline local development workflows.
