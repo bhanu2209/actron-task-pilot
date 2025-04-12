@@ -25,8 +25,8 @@ This project is an **AI-powered command agent** that automates local development
 
 ### 1. Clone the Repository
 ```bash
-git clone <YOUR_GIT_URL>
-cd <YOUR_PROJECT_NAME>
+git clone https://github.com/bhanu2209/actron-task-pilot.git
+cd actron-task-pilot
 ```
 
 ### 2. Install Dependencies
