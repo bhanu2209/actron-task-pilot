@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User, AuthChangeEvent } from '@supabase/supabase-js';
 import { supabase, verifyUser, createUserRecord } from '../lib/supabase';
 import { useToast } from '@/hooks/use-toast';
+import { Navigate } from 'react-router-dom';
 
 type AuthContextType = {
   session: Session | null;
@@ -11,6 +12,7 @@ type AuthContextType = {
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
+  isSupabaseConfigured: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,9 +22,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [userDetails, setUserDetails] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(!!supabase);
   const { toast } = useToast();
 
   useEffect(() => {
+    // If Supabase is not configured, show a warning and don't attempt to get a session
+    if (!supabase) {
+      setLoading(false);
+      toast({
+        title: "Supabase Not Configured",
+        description: "Please set up your Supabase environment variables.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Get initial session
     const getInitialSession = async () => {
       const { data: { session: initialSession } } = await supabase.auth.getSession();
@@ -87,6 +101,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [toast]);
 
   const signInWithGoogle = async () => {
+    if (!supabase) {
+      toast({
+        title: "Supabase Not Configured",
+        description: "Please set up your Supabase environment variables.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -108,6 +131,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    if (!supabase) {
+      return;
+    }
+    
     try {
       await supabase.auth.signOut();
       setUserDetails(null);
@@ -126,7 +153,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <AuthContext.Provider
-      value={{ session, user, userDetails, signInWithGoogle, signOut, loading }}
+      value={{ 
+        session, 
+        user, 
+        userDetails, 
+        signInWithGoogle, 
+        signOut, 
+        loading,
+        isSupabaseConfigured
+      }}
     >
       {children}
     </AuthContext.Provider>

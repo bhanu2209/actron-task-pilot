@@ -2,10 +2,23 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogIn, LogOut } from 'lucide-react';
+import { LogIn, LogOut, AlertTriangle } from 'lucide-react';
 
 export const AuthButtons: React.FC = () => {
-  const { user, signInWithGoogle, signOut } = useAuth();
+  const { user, signInWithGoogle, signOut, isSupabaseConfigured } = useAuth();
+
+  if (!isSupabaseConfigured) {
+    return (
+      <Button 
+        variant="outline" 
+        className="bg-amber-700 hover:bg-amber-600 text-white" 
+        disabled
+      >
+        <AlertTriangle className="mr-2 h-4 w-4" />
+        Supabase Not Configured
+      </Button>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2">

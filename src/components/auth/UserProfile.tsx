@@ -3,9 +3,22 @@ import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AlertTriangle } from 'lucide-react';
 
 export const UserProfile: React.FC = () => {
-  const { user, userDetails, loading } = useAuth();
+  const { user, userDetails, loading, isSupabaseConfigured } = useAuth();
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="flex items-center space-x-3 p-2 rounded-lg bg-amber-700/20 text-amber-100">
+        <AlertTriangle className="h-5 w-5 text-amber-400" />
+        <div>
+          <p className="text-sm font-medium">Supabase Not Configured</p>
+          <p className="text-xs">Please set environment variables</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
