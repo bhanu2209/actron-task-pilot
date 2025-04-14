@@ -1,11 +1,10 @@
-
 import { createClient } from '@supabase/supabase-js';
 
-// Check if Supabase URL and key are available
+// Directly use environment variables from Vite
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Create a Supabase client only if both URL and key are available
+// Ensure both URL and key are present before creating the client
 export const supabase = supabaseUrl && supabaseAnonKey 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
