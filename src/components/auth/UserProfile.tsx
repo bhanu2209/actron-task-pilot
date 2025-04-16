@@ -1,14 +1,14 @@
 
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { User } from 'lucide-react';
 
 export const UserProfile: React.FC = () => {
   return (
     <div className="flex items-center space-x-3 p-2 rounded-lg bg-gray-800/40">
-      <AlertTriangle className="h-5 w-5 text-amber-400" />
+      <User className="h-5 w-5 text-terminal-cyan" />
       <div>
-        <p className="text-sm font-medium text-terminal-text">Authentication Removed</p>
-        <p className="text-xs text-gray-400">User authentication has been disabled</p>
+        <p className="text-sm font-medium text-terminal-text">Guest User</p>
+        <p className="text-xs text-gray-400">Welcome to your dashboard</p>
       </div>
     </div>
   );

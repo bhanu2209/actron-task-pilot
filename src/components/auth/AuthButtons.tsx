@@ -1,17 +1,16 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle } from 'lucide-react';
+import { LogIn } from 'lucide-react';
 
 export const AuthButtons: React.FC = () => {
   return (
     <Button 
       variant="outline" 
-      className="bg-amber-700 hover:bg-amber-600 text-white" 
-      disabled
+      className="bg-terminal-cyan hover:bg-terminal-cyan/90 text-black" 
     >
-      <AlertTriangle className="mr-2 h-4 w-4" />
-      Authentication Disabled
+      <LogIn className="mr-2 h-4 w-4" />
+      Sign In
     </Button>
   );
 };

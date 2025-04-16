@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext } from 'react';
-import { useToast } from '@/hooks/use-toast';
 
 // Simple context without authentication functionality
 type AuthContextType = {
@@ -16,22 +15,9 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { toast } = useToast();
-
   // Placeholder functions that do nothing
-  const signInWithGoogle = () => {
-    toast({
-      title: "Authentication Removed",
-      description: "Authentication functionality has been removed from this application.",
-    });
-  };
-
-  const signOut = () => {
-    toast({
-      title: "Authentication Removed",
-      description: "Authentication functionality has been removed from this application.",
-    });
-  };
+  const signInWithGoogle = () => {};
+  const signOut = () => {};
 
   return (
     <AuthContext.Provider
