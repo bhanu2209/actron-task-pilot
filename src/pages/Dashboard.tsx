@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { UserProfile } from '@/components/auth/UserProfile';
 import { Terminal, Cpu } from 'lucide-react';
 
 const Dashboard = () => {
@@ -23,10 +22,6 @@ const Dashboard = () => {
 
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 shadow-lg max-w-2xl mx-auto">
           <h2 className="text-xl font-semibold mb-6 text-terminal-cyan">Dashboard</h2>
-          
-          <div className="mb-6">
-            <UserProfile />
-          </div>
           
           <div className="space-y-4">
             <div className="p-4 bg-gray-800 rounded-lg">
