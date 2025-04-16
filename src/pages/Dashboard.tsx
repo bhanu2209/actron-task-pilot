@@ -1,18 +1,9 @@
 
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
 import { UserProfile } from '@/components/auth/UserProfile';
 import { Terminal, Cpu } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, loading } = useAuth();
-
-  // Redirect to home if not authenticated
-  if (!loading && !user) {
-    return <Navigate to="/" />;
-  }
-
   return (
     <div className="min-h-screen bg-terminal-background text-terminal-text pb-16">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -31,7 +22,7 @@ const Dashboard = () => {
         </div>
 
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 shadow-lg max-w-2xl mx-auto">
-          <h2 className="text-xl font-semibold mb-6 text-terminal-cyan">Your Profile</h2>
+          <h2 className="text-xl font-semibold mb-6 text-terminal-cyan">Dashboard</h2>
           
           <div className="mb-6">
             <UserProfile />
@@ -41,7 +32,7 @@ const Dashboard = () => {
             <div className="p-4 bg-gray-800 rounded-lg">
               <h3 className="text-md font-medium mb-2">Personal Dashboard</h3>
               <p className="text-sm text-gray-400">
-                This is your personal dashboard where you can manage your tasks and preferences.
+                This is your dashboard where you can manage your tasks and preferences.
               </p>
             </div>
             
