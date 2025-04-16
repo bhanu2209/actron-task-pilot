@@ -1,8 +1,13 @@
 
 import React from 'react';
-import { Terminal, Cpu } from 'lucide-react';
+import { Terminal, Cpu, Trash2, ArrowLeft } from 'lucide-react';
+import { useTasks } from '@/contexts/TasksContext';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const Dashboard = () => {
+  const { tasks, clearTasks } = useTasks();
+
   return (
     <div className="min-h-screen bg-terminal-background text-terminal-text pb-16">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -21,22 +26,59 @@ const Dashboard = () => {
         </div>
 
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 shadow-lg max-w-2xl mx-auto">
-          <h2 className="text-xl font-semibold mb-6 text-terminal-cyan">Dashboard</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-terminal-cyan">Task Dashboard</h2>
+            <div className="flex space-x-2">
+              <Link to="/">
+                <Button variant="outline" size="sm" className="border-gray-700 hover:bg-gray-800">
+                  <ArrowLeft size={16} className="mr-1" /> Back to Home
+                </Button>
+              </Link>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-terminal-red border-gray-700 hover:bg-gray-800"
+                onClick={clearTasks}
+                disabled={tasks.length === 0}
+              >
+                <Trash2 size={16} className="mr-1" /> Clear Tasks
+              </Button>
+            </div>
+          </div>
           
           <div className="space-y-4">
-            <div className="p-4 bg-gray-800 rounded-lg">
-              <h3 className="text-md font-medium mb-2">Personal Dashboard</h3>
-              <p className="text-sm text-gray-400">
-                This is your dashboard where you can manage your tasks and preferences.
-              </p>
-            </div>
-            
-            <div className="p-4 bg-gray-800 rounded-lg">
-              <h3 className="text-md font-medium mb-2">Recent Activity</h3>
-              <p className="text-sm text-gray-400">
-                You don't have any recent activity yet.
-              </p>
-            </div>
+            {tasks.length > 0 ? (
+              tasks.map((task) => (
+                <div 
+                  key={task.id} 
+                  className={`p-4 rounded-lg ${
+                    task.status === 'pending' ? 'bg-gray-800' : 
+                    task.status === 'running' ? 'bg-blue-900/20' : 
+                    task.status === 'completed' ? 'bg-green-900/20' : 
+                    'bg-red-900/20'
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <div className={`w-3 h-3 rounded-full mr-3 ${
+                      task.status === 'pending' ? 'bg-gray-500' : 
+                      task.status === 'running' ? 'bg-terminal-blue' : 
+                      task.status === 'completed' ? 'bg-terminal-green' : 
+                      'bg-terminal-red'
+                    }`}></div>
+                    <div>
+                      <h3 className="font-medium">{task.description}</h3>
+                      {task.command && (
+                        <p className="text-sm text-gray-400 mt-1 font-mono">$ {task.command}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-4 bg-gray-800 rounded-lg">
+                <p className="text-gray-400">No tasks available. Go to the home page to create some!</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

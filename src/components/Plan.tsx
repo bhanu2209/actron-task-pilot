@@ -3,18 +3,12 @@ import React from 'react';
 import { Check, Play, RefreshCw, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-
-export type Step = {
-  id: number;
-  description: string;
-  command?: string;
-  status: 'pending' | 'running' | 'completed' | 'failed';
-};
+import { Task } from '@/contexts/TasksContext';
 
 export type PlanStatus = 'planning' | 'approval' | 'executing' | 'feedback' | 'completed' | 'failed';
 
 interface PlanProps {
-  steps: Step[];
+  steps: Task[];
   status: PlanStatus;
   onApprove: () => void;
   onRetry: () => void;

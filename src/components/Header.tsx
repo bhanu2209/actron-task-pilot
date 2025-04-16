@@ -16,6 +16,15 @@ const Header = () => {
         The Self-Evolving <span className="text-terminal-cyan">Terminal Assistant</span>
       </p>
       
+      <div className="mt-2">
+        <Link 
+          to="/dashboard" 
+          className="text-terminal-cyan hover:text-terminal-cyan/80 underline text-sm"
+        >
+          Go to Dashboard
+        </Link>
+      </div>
+      
       <div className="flex items-center mt-2 text-sm text-gray-400 bg-gray-800/30 px-4 py-1 rounded-full">
         <Cpu size={12} className="mr-2" /> 
         <span>AI-Powered Task Execution</span>

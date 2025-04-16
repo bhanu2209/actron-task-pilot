@@ -1,13 +1,14 @@
 
 import React, { useState } from 'react';
 import Terminal from './Terminal';
-import Plan, { Step, PlanStatus } from './Plan';
+import Plan, { PlanStatus } from './Plan';
 import FeedbackForm from './FeedbackForm';
 import ModelSelector, { AIModel } from './ModelSelector';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Info } from 'lucide-react';
+import { useTasks, Task } from '@/contexts/TasksContext';
 
 const models: AIModel[] = [
   { id: 'gpt35', name: 'GPT-3.5 Turbo', provider: 'OpenAI', type: 'cloud' },
@@ -26,23 +27,15 @@ const exampleCommands = [
 
 const ActronDemo: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<AIModel>(models[1]); // Local model default
-  const [planStatus, setPlanStatus] = useState<PlanStatus>('planning');
+  const [planStatus, setPlanStatus] = useState<PlanStatus>('approval');
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [executionHistory, setExecutionHistory] = useState<string[]>([]);
   const { toast } = useToast();
-
-  // Initial demo steps
-  const [steps, setSteps] = useState<Step[]>([
-    { id: 1, description: "Initialize project structure", command: "mkdir -p my-project/{client,server}", status: 'pending' },
-    { id: 2, description: "Set up Next.js with React", command: "npx create-next-app@latest client", status: 'pending' },
-    { id: 3, description: "Set up Node.js Express backend", command: "cd server && npm init -y && npm i express mongoose cors dotenv", status: 'pending' },
-    { id: 4, description: "Add TailwindCSS to frontend", command: "cd client && npm i -D tailwindcss postcss autoprefixer", status: 'pending' },
-    { id: 5, description: "Create MongoDB connection", status: 'pending' },
-    { id: 6, description: "Generate login/signup components", status: 'pending' },
-    { id: 7, description: "Set up basic routing", status: 'pending' }
-  ]);
+  
+  // Use our tasks context
+  const { tasks, addTask, removeTask, updateTaskStatus, clearTasks } = useTasks();
 
   // Function to handle command submission from terminal
   const handleCommandSubmit = (command: string) => {
@@ -60,19 +53,19 @@ const ActronDemo: React.FC = () => {
     
     setPlanStatus('planning');
     
-    // Reset steps first
-    setSteps(prevSteps => 
-      prevSteps.map(step => ({
-        ...step,
-        status: 'pending'
-      }))
-    );
+    // Clear existing tasks first
+    clearTasks();
     
     // Simulate AI processing with delays
     setTimeout(() => {
       // Generate steps based on command (simplified for demo)
       const newSteps = generateDemoSteps(command);
-      setSteps(newSteps);
+      
+      // Add each step as a task
+      newSteps.forEach(step => {
+        addTask(step);
+      });
+      
       setPlanStatus('approval');
       setIsProcessing(false);
       
@@ -92,21 +85,16 @@ const ActronDemo: React.FC = () => {
   // Function to execute steps one by one
   const executeSteps = async () => {
     // Execute each step with a delay to simulate processing
-    for (let i = 0; i < steps.length; i++) {
+    for (let i = 0; i < tasks.length; i++) {
       setActiveStep(i);
       
       // Update current step to running
-      setSteps(prevSteps => 
-        prevSteps.map((step, idx) => ({
-          ...step,
-          status: idx === i ? 'running' : step.status
-        }))
-      );
+      updateTaskStatus(tasks[i].id, 'running');
       
       // Add execution message to history
       setExecutionHistory(prev => [
         ...prev, 
-        `[EXECUTING] ${steps[i].description}`
+        `[EXECUTING] ${tasks[i].description}`
       ]);
       
       // Simulate execution time
@@ -116,12 +104,7 @@ const ActronDemo: React.FC = () => {
       const isSuccess = Math.random() > 0.05;
       
       // Update step status based on success/failure
-      setSteps(prevSteps => 
-        prevSteps.map((step, idx) => ({
-          ...step,
-          status: idx === i ? (isSuccess ? 'completed' : 'failed') : step.status
-        }))
-      );
+      updateTaskStatus(tasks[i].id, isSuccess ? 'completed' : 'failed');
       
       // Add result message
       setExecutionHistory(prev => [
@@ -173,13 +156,12 @@ const ActronDemo: React.FC = () => {
     
     // Simulate processing feedback and creating a new plan
     setTimeout(() => {
-      // For demo purposes, just reset the failed steps to pending
-      setSteps(prevSteps => 
-        prevSteps.map(step => ({
-          ...step,
-          status: step.status === 'failed' ? 'pending' : step.status
-        }))
-      );
+      // Reset failed tasks to pending
+      tasks.forEach(task => {
+        if (task.status === 'failed') {
+          updateTaskStatus(task.id, 'pending');
+        }
+      });
       
       setPlanStatus('approval');
       
@@ -215,36 +197,44 @@ const ActronDemo: React.FC = () => {
   };
 
   // Generate demo steps based on the command
-  const generateDemoSteps = (command: string): Step[] => {
+  const generateDemoSteps = (command: string): Omit<Task, 'id'>[] => {
     // Very basic demo logic - in a real implementation this would be AI-generated
     if (command.toLowerCase().includes('python')) {
       return [
-        { id: 1, description: "Create Python script", command: "touch convert.py", status: 'pending' },
-        { id: 2, description: "Install required packages", command: "pip install pandas", status: 'pending' },
-        { id: 3, description: "Write CSV conversion function", status: 'pending' },
-        { id: 4, description: "Add command-line argument handling", status: 'pending' },
-        { id: 5, description: "Test with sample data", status: 'pending' }
+        { description: "Create Python script", command: "touch convert.py", status: 'pending' },
+        { description: "Install required packages", command: "pip install pandas", status: 'pending' },
+        { description: "Write CSV conversion function", status: 'pending' },
+        { description: "Add command-line argument handling", status: 'pending' },
+        { description: "Test with sample data", status: 'pending' }
       ];
     } else if (command.toLowerCase().includes('docker')) {
       return [
-        { id: 1, description: "Create Dockerfile", command: "touch Dockerfile docker-compose.yml", status: 'pending' },
-        { id: 2, description: "Setup Nginx configuration", command: "mkdir nginx-config", status: 'pending' },
-        { id: 3, description: "Configure PostgreSQL service", status: 'pending' },
-        { id: 4, description: "Setup Redis cache service", status: 'pending' },
-        { id: 5, description: "Create Docker network", status: 'pending' },
-        { id: 6, description: "Configure environment variables", status: 'pending' }
+        { description: "Create Dockerfile", command: "touch Dockerfile docker-compose.yml", status: 'pending' },
+        { description: "Setup Nginx configuration", command: "mkdir nginx-config", status: 'pending' },
+        { description: "Configure PostgreSQL service", status: 'pending' },
+        { description: "Setup Redis cache service", status: 'pending' },
+        { description: "Create Docker network", status: 'pending' },
+        { description: "Configure environment variables", status: 'pending' }
       ];
     } else if (command.toLowerCase().includes('portfolio')) {
       return [
-        { id: 1, description: "Create project structure", command: "mkdir -p portfolio/{css,js,images}", status: 'pending' },
-        { id: 2, description: "Create HTML boilerplate", command: "touch portfolio/index.html", status: 'pending' },
-        { id: 3, description: "Add basic styling", command: "touch portfolio/css/style.css", status: 'pending' },
-        { id: 4, description: "Create JavaScript for interactions", command: "touch portfolio/js/main.js", status: 'pending' },
-        { id: 5, description: "Implement responsive design", status: 'pending' }
+        { description: "Create project structure", command: "mkdir -p portfolio/{css,js,images}", status: 'pending' },
+        { description: "Create HTML boilerplate", command: "touch portfolio/index.html", status: 'pending' },
+        { description: "Add basic styling", command: "touch portfolio/css/style.css", status: 'pending' },
+        { description: "Create JavaScript for interactions", command: "touch portfolio/js/main.js", status: 'pending' },
+        { description: "Implement responsive design", status: 'pending' }
       ];
     } else {
       // Default full-stack app steps
-      return steps;
+      return [
+        { description: "Initialize project structure", command: "mkdir -p my-project/{client,server}", status: 'pending' },
+        { description: "Set up Next.js with React", command: "npx create-next-app@latest client", status: 'pending' },
+        { description: "Set up Node.js Express backend", command: "cd server && npm init -y && npm i express mongoose cors dotenv", status: 'pending' },
+        { description: "Add TailwindCSS to frontend", command: "cd client && npm i -D tailwindcss postcss autoprefixer", status: 'pending' },
+        { description: "Create MongoDB connection", status: 'pending' },
+        { description: "Generate login/signup components", status: 'pending' },
+        { description: "Set up basic routing", status: 'pending' }
+      ];
     }
   };
 
@@ -314,7 +304,7 @@ const ActronDemo: React.FC = () => {
           <h2 className="text-xl font-bold text-terminal-text mb-2">Execution Plan</h2>
           
           <Plan 
-            steps={steps}
+            steps={tasks}
             status={planStatus}
             onApprove={handleApprove}
             onRetry={handleRetry}
