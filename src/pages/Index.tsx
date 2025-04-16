@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Header from '@/components/Header';
-import ActronDemo from '@/components/ActronDemo';
+import ActronDemo from '@/components/actron';
 import { Github, ExternalLink } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
